@@ -4,7 +4,7 @@ This is a Huff implementation of Secp256k1 curve based on the [LibSecp256k1 Soli
 
 ### Interface
 
-See: [ISecp256k1.sol](src/interface/ISecp256k1.sol)
+See: [ISecp256k1.sol](https://github.com/Jesserc/Secp256k1-hufff/blob/main/src/Interface/ISecp256k1.sol)
 
 ```solidity
     function isOnCurveSecp25k1Curve(uint256 x, uint256 y) external pure returns (bool);
