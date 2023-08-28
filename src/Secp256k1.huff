@@ -1,0 +1,582 @@
+/// @title LibSecp256k1
+/// @notice SPDX-License-Identifier: MIT
+/// @author Jesserc <https://github.com/Jesserc>
+/// @notice Library for secp256k1 elliptic curve computations in Huff
+/// @notice Adapted from scribe/LibSecp256k1.sol (https://github.com/chronicleprotocol/scribe/blob/main/src/libs/LibSecp256k1.sol)
+
+/* Function Interfaces */
+#define function isOnCurve(uint256 a, uint256 b, uint256 p, uint256 x, uint256 y) pure returns(bool)
+#define function isOnCurveSecp25k1Curve(uint256 x, uint256 y) pure returns(bool)
+#define function ZERO_POINT() pure returns(uint256[2])
+#define function G_POINT() pure returns(uint256[2])
+#define function OrderOfSecp256k1Curve() pure returns(uint256)
+#define function yParity(uint256 x, uint256 y) pure returns(uint256)
+#define function isZeroPoint(uint256 x, uint256 y) pure returns(bool)
+#define function toAddress(uint256 x, uint256 y) pure returns(address)
+#define function toJacobian(uint256 x, uint256 y) pure returns(uint256[3])
+#define function toJacobian(uint256 x, uint256 y) pure returns(uint256[3])
+#define function toAffine(uint256 x, uint256 y, uint256 z ) pure returns(uint256[2])
+
+/* Constants */
+#define constant A = 0x0000000000000000000000000000000000000000000000000000000000000000
+#define constant B = 0x0000000000000000000000000000000000000000000000000000000000000007
+#define constant P = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F
+#define constant N = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
+#define constant G_X = 0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+#define constant G_Y = 0x483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8
+#define constant ADDRESS_MASK = 0x000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+
+/* Macros */
+
+/// @dev Returns whether any given point is on any given curve
+/// with the supplied curve parameters: a, b, p and (x,y) points
+#define macro IS_ON_CURVE_MACRO() = takes(0) returns(0) {
+  // General elliptic curve formula:
+  // y² ≡ x³ + ax + b (mod P)
+
+   /* 
+    I'll seperate the eqn "y² ≡ x³ + ax + b (mod P)" into two parts:
+    lhs = y² mod p
+    rhs = (x³ mod p) + (ax mod p) + b mod p
+
+    This will be implemented like this:
+    lhs = mulmod(y, y, p)
+    rhs = addmod(addmod(mulmod(x, mulmod(x, x, p), p), mulmod(a, x, p), p) , b, p) // this only applies when x != 0
+
+    if x = 0, then rhs will be:
+    rhs = addmod(mulmod(x, mulmod(x, x, p), p), b, p); // which is y² ≡ x³ + b (mod P) since x = 0
+    
+    To fit this well, we will have two jump tables to match the two cases.
+
+    see implementation below.
+  */
+   
+  0x04 calldataload // [a]
+  dup1 // [a, a]
+  iszero // [is-a-zero, a]
+  aIsZeroJump jumpi // jump to aIsZeroJump if a = 0, else continue execution // [a]
+  // evaluate rhs and lhs accordingly
+  // lhs = y² mod p
+   0x44 calldataload // [p, a]
+  0x84 calldataload // [y, p, a]
+  dup1 // [y, y, p, a]
+  mulmod // [(y * y % p), a] // note that (y * y % p) == y² % p == lhs
+  // now we evaluate rhs = (x³ mod p) + (ax mod p) + b mod p
+  0x64 calldataload // [x, (y * y % p), a]
+  dup1 // [x, x, (y * y % p), a]
+  0x44 calldataload // [p, x, x, (y * y % p), a]
+  dup1 dup1 // [p, p, p, x, x, (y * y % p), a]
+  swap3 // [x, p, p, p, x, (y * y % p), a]
+  dup1 // [x, x, p, p, p, x, (y * y % p), a]
+  mulmod // [(x * x % p), p, p, x, (y * y % p), a] 
+  dup4// [x, (x * x % p), p, p, x, (y * y % p), a] 
+  mulmod // [(x * (x * x % p) % p), p, x, (y * y % p), a] 
+  dup2 dup4 dup1 // [x, x, p, (x * (x * x % p) % p), p, x, (y * y % p), a] 
+  swap7 // [a, x, p, (x * (x * x % p) % p), p, x, (y * y % p), x]
+  mulmod // [(a * x % p), (x * (x * x % p) % p), p, x, (y * y % p), x]
+  dup3 // [p, (a * x % p), (x * (x * x % p) % p), p, x, (y * y % p), x]
+  swap2 // [(x * (x * x % p) % p), (a * x % p), p, p, x, (y * y % p), x]
+  addmod // [((x * (x * x % p) % p) + (a * x % p) % p), p, x, (y * y % p), x]
+  0x24 calldataload // [b, ((x * (x * x % p) % p) + (a * x % p) % p), p, x, (y * y % p), x]
+  swap1 // [((x * (x * x % p) % p) + (a * x % p) % p), b, p, x, (y * y % p), x]
+  addmod // [(((x * (x * x % p) % p) + (a * x % p) % p) + b % p), x, (y * y % p), x]
+  swap1 pop // [(((x * (x * x % p) % p) + (a * x % p) % p) + b % p), (y * y % p), x]
+  /* 
+  At this point we have gottwn both lhs and rhs:
+  lhs = (y * y % p)
+  rhs = (b + ((x * a % p) + (x * (x * x % p) % p) % p) % p)
+
+  We will now evaluate lhs == rhs
+ */
+  eq // [(lhs == rhs), x] // compare lhs and rhs
+  0x00 mstore // [x] // store boolean comparison result to memory
+  pop // [] // remove leftover x. I'm sure this could be optimized better
+  0x20 0x00 return // return the boolean stored in memory
+
+  // jump label for when a is 0, so we don't muliply with 0
+  aIsZeroJump:
+  0x44 calldataload // [p, a]
+  0x84 calldataload // [y, p, a]
+  dup1 // [y, y, p, a]
+  mulmod // [(y * y % p), a] // note that (y * y % p) == y² % p == lhs
+  // now we evaluate rhs = (x³ mod p) + (ax mod p) + b mod p
+  0x64 calldataload // [x, (y * y % p), a]
+  dup1 // [x, x, (y * y % p), a]
+  0x44 calldataload // [p, x, x, (y * y % p), a]
+  dup1 dup1 // [p, p, p, x, x, (y * y % p), a]
+  swap3 // [x, p, p, p, x, (y * y % p), a]
+  dup1 // [x, x, p, p, p, x, (y * y % p), a]
+  mulmod // [(x * x % p), p, p, x, (y * y % p), a] 
+  dup4// [x, (x * x % p), p, p, x, (y * y % p), a] 
+  mulmod // [(x * (x * x % p) % p), p, x, (y * y % p), a] 
+  0x24 calldataload // [b, (x * (x * x % p) % p), p, x, (y * y % p), a]
+  swap1 // [(x * (x * x % p) % p), b, p, x, (y * y % p), a]
+  addmod // [((x * (x * x % p) % p) + b % p), x, (y * y % p), a]
+  swap1 pop // [((x * (x * x % p) % p) + b % p), (y * y % p), a]
+  eq // [(lhs == rhs), a] // compare lhs and rhs
+  0x00 mstore // [a] // store boolean comparison result to memory
+  pop // [] // remove leftover p. I'm sure this could be optimized better
+  0x20 0x00 return // return the boolean stored in memory
+}
+
+/// @dev Returns whether a given is a point on the secp256k1 curve.
+/// The secp256k1 curve formula is y² ≡ x³ + ax + b (mod P), with a = 0, b = 7
+/// Hence, y² ≡ x³ + 7 (mod P)
+/// Like the above macro, we check if the rhs == ls
+#define macro IS_ON_SECP256K1_CURVE_MACRO() = takes(0) returns(0){
+  [P] // [P]
+  0x24 calldataload // [y, P]
+  dup1 // [y, y, P]
+  mulmod // [(y * y % P)]
+  0x04 calldataload // [x, (y * y % P)]
+  dup1 // [x, x, (y * y % P)]
+  [P] // [P, x, x, (y * y % P)]
+  dup1 dup1 // [P, P, P, x, x, (y * y % P)]
+  swap3 // [x, P, P, P, x, (y * y % P)]
+  dup1 // [x, x, P, P, P, x, (y * y % P)]
+  mulmod // [(x * x % P), P, P, x, (y * y % P)] 
+  dup4// [x, (x * x % P), P, P, x, (y * y % P)] 
+  mulmod // [(x * (x * x % P) % P), P, x, (y * y % P)] 
+  [B] // [B, (x * (x * x % P) % P), P, x, (y * y % P)] 
+  swap1 // [(x * (x * x % P) % P), B, P, x, (y * y % P)]
+  addmod // [((x * (x * x % P) % P) + B % P), x, (y * y % P)]
+  swap1 pop // [((x * (x * x % P) % P) + B % P),e (y * y % P)]
+  eq // [(lhs == rhs)] // compare lhs and rhs
+  0x00 mstore
+  0x20 0x00 return
+}
+
+/// @dev Returns the (0, 0) point
+#define macro ZERO_POINT_MACRO() = takes(0) returns(0){
+  0x40 0x00 return // to save gas, I will just return empty memory with zeros(2 zeros) // this should be called with fresh memory
+}
+
+/// @dev Returns the generator point of the secp256k1 curve
+#define macro G_POINT_MACRO() = takes(0) returns(0){
+  [G_X] 0x00 mstore
+  [G_Y] 0x20 mstore
+  0x40 0x00 return
+}
+
+/// @dev Returns the curve order of the secp256k1 curve
+#define macro ORDER_OF_SECP256K1_MACRO() = takes(0) returns(0){
+  [N] 0x00 mstore
+  0x20 0x00 return
+}
+
+/// @dev Returns the y parity of a point's y coordinate
+#define macro Y_PARITY_MACRO() = takes(0) returns(0){
+  0x01 // [1]
+  0x24 calldataload // [y, 1]
+  and // [y & 1]
+  0x00 mstore // []
+  0x20 0x00 return
+}
+
+/// @dev Returns whether a point is the zero point (0, 0)
+#define macro IS_ZERO_POINT_MACRO() = takes(0) returns(0){
+  // bitwise OR x and y, if they are 0, return 1 else 0
+  0x24 calldataload // [y]
+  0x04 calldataload // [x, y]
+  or // [bitwise x | y]
+  iszero 
+  0x00 mstore
+  0x20 0x00 return
+}
+
+/// @dev Returns the Ethereum address of a point (x, y)
+#define macro TO_ADDRESS_MACRO() = takes(0) returns(0){
+  0x04 calldataload // [x]
+  0x00 mstore // []
+  0x24 calldataload // [y]
+  0x20 mstore // []
+  0x40 0x00 sha3 // [keccak256(x, y)]
+  [ADDRESS_MASK] 
+  and
+  0x00 mstore
+  0x20 0x00 return
+}
+
+/// @dev Returns Affine point (x, y) in Jacobian coordinates.
+#define macro TO_JACOBIAN_MACRO() = takes(0) returns(0){
+  0x04 calldataload // [x]
+  0x00 mstore // []
+  0x24 calldataload // [y]
+  0x20 mstore // []
+  0x01 0x40 mstore // save 1 to memory
+  0x60 0x00 return
+}
+
+/// @dev Adds Affine point (x, y) to Jacobian point (x, y, z) and returns the sum as a Jacobian point (x, y, z)
+#define macro ADD_AFFINE_POINT_MACRO() = takes(0) returns(0){
+   /* 
+   Addition formula from the original Solidity library:
+        x = r² - j - (2 * v)             (mod P)
+        y = (r * (v - x)) - (2 * y1 * j) (mod P)
+        z = (z1 + h)² - z1² - h²         (mod P)
+  
+   where:
+        r = 2 * (s - y1) (mod P)
+        j = h * i        (mod P)
+        v = x1 * i       (mod P)
+        h = u - x1       (mod P)
+        s = y2 * z1³     (mod P)       
+        i = 4 * h²       (mod P)
+        u = x2 * z1²     (mod P)      
+  
+   and:
+        x1 = J.x
+        y1 = J.y
+        z1 = J.z
+        x2 = A.x
+        y2 = A.y
+   J = Jacobian, A = Affine
+ */
+
+  // first, we save the Jacobian (J) point coordinates (x, y, z) to memory
+  
+  
+  // <==== memory allocations ====>
+  // 0x00=x1=J.x 0x20=y1=J.y 0x40=z1=J.z, 0x60=z1_2=(J.z * J.z % p),
+  // 0x80=h=((A.x * (J.z * J.z % p) % p) + (p - J.x) % p),
+  // 0xa0=h_2=(((A.x * (J.z * J.z % p) % p) + (p - J.x) % p), ((A.x * (J.z * J.z % p) % p) + (p - J.x) % p) % p)
+  // 0xc0=i=(4 * (((A.x * (J.z * J.z % p) % p) + (p - J.x) % p), ((A.x * (J.z * J.z % p) % p) + (p - J.x) % p) % p) % p)
+  // 0xe0=left=((z1 + h % p) * (z1 + h % p) % p)
+  // 0x100=mid=(p - z1_2)
+  // 0x120=right=(p - h_2)
+  
+  0x04 calldataload // [J.x]
+  0x00 mstore // []
+  0x24 calldataload // [J.y]
+  0x20 mstore // []
+  0x44 calldataload // [J.z]
+  0x40 mstore // []
+
+  // now we compute rest of the formula starting from z
+  [P] dup1 // [p, p]
+  0x40 mload dup1 // [J.z, J.z, p, p]
+  mulmod dup1 // [(J.z * J.z % p), (J.z * J.z % p), p]
+  0x60 mstore // [(J.z * J.z % p), p]]
+  0x64 calldataload // [A.x, (J.z * J.z % p), p]
+  mulmod // [(A.x * (J.z * J.z % p) % p)]
+  0x00 mload // [J.x, (A.x * (J.z * J.z % p) % p)]
+  [P] // [p, J.x, (A.x * (J.z * J.z % p) % p)]
+  sub // [(p - J.x), (A.x * (J.z * J.z % p) % p)]
+  [P] // [p, (p - J.x), (A.x * (J.z * J.z % p) % p)]
+  swap2// [(A.x * (J.z * J.z % p) % p), (p - J.x), p]
+  addmod // [((A.x * (J.z * J.z % p) % p) + (p - J.x) % p)]
+  dup1 dup1 // [((A.x * (J.z * J.z % p) % p) + (p - J.x) % p), ((A.x * (J.z * J.z % p) % p) + (p - J.x) % p), ((A.x * (J.z * J.z % p) % p) + (p - J.x) % p)]
+  0x80 mstore // [((A.x * (J.z * J.z % p) % p) + (p - J.x) % p), ((A.x * (J.z * J.z % p) % p) + (p - J.x) % p)]
+  [P] swap2 // [((A.x * (J.z * J.z % p) % p) + (p - J.x) % p), ((A.x * (J.z * J.z % p) % p) + (p - J.x) % p), p]
+  // compute h_2
+  mulmod // [(((A.x * (J.z * J.z % p) % p) + (p - J.x) % p), ((A.x * (J.z * J.z % p) % p) + (p - J.x) % p) % p)] this is h_2
+  // duplicate h_2
+  dup1 // [(((A.x * (J.z * J.z % p) % p) + (p - J.x) % p), ((A.x * (J.z * J.z % p) % p) + (p - J.x) % p) % p), (((A.x * (J.z * J.z % p) % p) + (p - J.x) % p), ((A.x * (J.z * J.z % p) % p) + (p - J.x) % p) % p)]
+  0xa0 mstore // [(((A.x * (J.z * J.z % p) % p) + (p - J.x) % p), ((A.x * (J.z * J.z % p) % p) + (p - J.x) % p) % p)] // save h_2 to memory
+  // compute i
+  [P] swap1 // [(((A.x * (J.z * J.z % p) % p) + (p - J.x) % p), ((A.x * (J.z * J.z % p) % p) + (p - J.x) % p) % p), p]
+  0x04 // [4, (((A.x * (J.z * J.z % p) % p) + (p - J.x) % p), ((A.x * (J.z * J.z % p) % p) + (p - J.x) % p) % p), p]
+  mulmod // [(4 * (((A.x * (J.z * J.z % p) % p) + (p - J.x) % p), ((A.x * (J.z * J.z % p) % p) + (p - J.x) % p) % p) % p)] // this is i
+  0xc0 mstore // save i to memory // []
+
+  // Compute z = (z1 + h)² - z1²       - h²       (mod P)
+  //           = (z1 + h)² - z1²       + (P - h²) (mod P)
+  //           = (z1 + h)² + (P - z1²) + (P - h²) (mod P)
+  //             ╰───────╯   ╰───────╯   ╰──────╯
+  //               left         mid       right
+  // this comment is from the original solidity library
+
+  // implement left
+  [P] dup1 dup1 dup1 // [p, p, p, p]
+  0x80 mload // [h, p, p, p, p]
+  0x40 mload // [z1, h, p, p, p, p]
+  addmod // [(z1 + h % p), p, p, p]
+  dup1 // [(z1 + h % p), (z1 + h % p), p, p, p]
+  mulmod // [((z1 + h % p) * (z1 + h % p) % p), p, p]
+  0xe0 mstore // [p, p] // store left in memory
+  dup1 dup1 // [p, p, p, p]
+  // implement mid 
+  0x60 mload // [z1_2, p, p, p, p]
+  swap1 // [p, z1_2, p, p, p]
+  sub // [(p - z1_2), p, p, p]
+  0x100 mstore // [p, p, p] // store mid in memory
+  // implement right
+  0xa0 mload // [h_2, p, p, p]
+  swap1 // [p, h_2, p, p]
+  sub // [(p - h_2), p, p]
+  0x120 mstore // [p, p] // store right in memory
+  // now we have all parts ready to implement z
+  0x120 mload // [right, p, p]
+  0x100 mload // [mid, right, p, p]
+  addmod // [(mid + right % p), p]
+  0xe0 mload // [left, (mid + right % p), p]
+  addmod // [(left + (mid + right % p) % p)] // this is our new Jacobian point.z coordinate
+  0x140 mstore // [] // store z to memory
+
+  // next, is to implement Jacobian x coordinate from the sum (with everything needed for x)
+  // refer to the start of this macro to see what each symbols mean
+  // first we implement v
+  [P] dup1 // [p, p]
+  0xc0 mload swap1 dup2 // [i, p, i, p]
+  0x00 mload // [x1, i, p, i, p]
+  mulmod // [(x1 * i % p), i, p]
+  0x160 mstore // [i, p] // store v to memory
+
+  // implement j
+  0x80 mload // [h, i, p]
+  mulmod // [(h * i % p)] // this is j
+  0x180 mstore // [] // save j to memory
+
+  // now we implement r
+  [P] dup1 dup1 dup1 // [p, p, p, p]
+  0x40 mload 0x60 mload // [z1_2, z1, p, p, p, p]
+  mulmod // [(z1_2 * z1 % p), p, p]
+  0x84 calldataload // [A.y, (z1_2 * z1 % p), p, p, p]
+  mulmod // [(A.y * (z1_2 * z1 % p) % p), p, p]
+  0x20 mload dup3 // [p, y1, (A.y * (z1_2 * z1 % p) % p), p, p]
+  sub // [(p - y1), (A.y * (z1_2 * z1 % p) % p), p]
+  swap1 // [(A.y * (z1_2 * z1 % p) % p), (p - y1), p, p]
+  addmod // [((A.y * (z1_2 * z1 % p) % p) + (p - y1) % p), p]
+  0x02 // [2, ((A.y * (z1_2 * z1 % p) % p) + (p - y1) % p), p]
+  mulmod dup1 // [(2 * ((A.y * (z1_2 * z1 % p) % p) + (p - y1) % p) % p), (2 * ((A.y * (z1_2 * z1 % p) % p) + (p - y1) % p) % p)] // this is r
+  0x1a0 mstore // save r to memory // [(2 * ((A.y * (z1_2 * z1 % p) % p) + (p - y1) % p) % p)] // this is long so we'll just call it r
+  [P] dup1 // [p, p, r]
+  swap2 // [r, p, p]
+  dup1 // [r, r, p, p]
+  mulmod // [(r * r % p), p]
+  dup2 // [p, (r * r % p), p]
+  dup1 // [p, p, (r * r % p), p]
+  0x180 swap1 // [p, j, p, (r * r % p), p]
+  sub // [(p - j), p, (r * r % p), p]
+  dup2 // [p, (p - j), p, (r * r % p), p]
+  0x160 mload 0x02 // [2, v, p, (p - j), p, (r * r % p), p]
+  mulmod // [(2 * v % p), (p - j), p, (r * r % p), p]
+  dup3 // [p, (2 * v % p), (p - j), p, (r * r % p), p]
+  sub // [(p - (2 * v % p)), (p - j), p, (r * r % p), p]
+  swap1 // [(p - j), (p - (2 * v % p)), p, (r * r % p), p]
+  addmod // [((p - j) + (p - (2 * v % p)) % p), (r * r % p), p]
+  swap1 // [(r * r % p), ((p - j) + (p - (2 * v % p)) % p), p]
+  addmod dup1 // [((r * r % p) + ((p - j) + (p - (2 * v % p)) % p) % p), ((r * r % p) + ((p - j) + (p - (2 * v % p)) % p) % p)] // this is our new Jacobian point.x coordinate
+  0x1c0 mstore // store x in memory
+
+  // <==== memory allocations ====>
+  // 0x00=x1=J.x 0x20=y1=J.y 0x40=z1=J.z, 0x60=z1_2=(J.z * J.z % p),
+  // 0x80=h=((A.x * (J.z * J.z % p) % p) + (p - J.x) % p),
+  // 0xa0=h_2=(((A.x * (J.z * J.z % p) % p) + (p - J.x) % p), ((A.x * (J.z * J.z % p) % p) + (p - J.x) % p) % p)
+  // 0xc0=i=(4 * (((A.x * (J.z * J.z % p) % p) + (p - J.x) % p), ((A.x * (J.z * J.z % p) % p) + (p - J.x) % p) % p) % p)
+  // 0xe0=left=((z1 + h % p) * (z1 + h % p) % p)
+  // 0x100=mid=(p - z1_2)
+  // 0x120=right=(p - h_2)
+  // 0x140=z=(left + (mid + right % p) % p)
+  // 0x160=v=(x1 * i % p)
+  // 0x180=j=(h * i % p)
+  // 0x1a0=r=(2 * ((A.y * (z1_2 * z1 % p) % p) + (p - y1) % p) % p)
+  // 0x1c0=x=((r * r % p) + ((p - j) + (p - (2 * v % p)) % p) % p)
+
+  // finally, we implement Jacobian y coordinate from the sum (with everything needed for it)
+
+  // Compute y = (r * (v - x))       - (2 * y1 * j)       (mod P)
+  //           = (r * (v - x))       + (P - (2 * y1 * j)) (mod P)
+  //           = (r * (v + (P - x))) + (P - (2 * y1 * j)) (mod P)
+  //             ╰─────────────────╯   ╰────────────────╯
+  //                    left                 right
+  // this comment is from the original library
+
+  [P] dup1 dup1 // [p, p, p, x]
+  swap3 // [x, p, p, p]
+  dup2 // [p, x, p, p, p]
+  sub // [(p - x), p, p, p]
+  0x160 mload // [v, (p - x), p, p, p]
+  addmod // [(v + (p - x) % p), p, p]
+  0x1a0 mload // [r, (v + (p - x) % p), p, p]
+  mulmod // [(r * (v + (p - x) % p) % p), p]
+  dup2 dup1 // [p, p, (r * (v + (p - x) % p) % p), p]
+  0x180 mload 0x20 mload // [y1, j, p, p, (r * (v + (p - x) % p) % p), p]
+  mulmod // [(y1 * j % p), p, (r * (v + (p - x) % p) % p), p]
+  0x02 // [2, (y1 * j % p), p, (r * (v + (p - x) % p) % p), p]
+  mulmod // [(2 * (y1 * j % p) % p), (r * (v + (p - x) % p) % p), p]
+  swap1 // [(r * (v + (p - x) % p) % p), (2 * (y1 * j % p) % p), p]
+  addmod // [((r * (v + (p - x) % p) % p) + (2 * (y1 * j % p) % p) % p)] // this is our new Jacobian point.y coordinate
+  0x20 mstore // [] // store y at 0x20 and override previous data, cause we're done with our operations
+  0x1c0 mload // [x]
+  0x00 mstore // [] // store x at 0x00
+  0x140 mload // [z]
+  0x40 mstore // [] // store z at 0x40
+  0x60 0x00 return
+}
+
+/// @dev Returns Jacobian point (x, y, z) in Affine coordinates (x, y)
+#define macro TO_AFFINE_MACRO() = takes(0) returns(0){
+  0x44 calldataload // [z]
+  INV_MOD_MACRO() // [z⁻¹] // compute modular inverse of z in Jacobian coordinate
+  [P] dup1 // [p, p, z⁻¹]
+  dup3 dup1 // [z⁻¹, z⁻¹, p, p, z⁻¹]
+  // Compute (z⁻¹)² (mod P)
+  mulmod // [(z⁻¹ * z⁻¹ % p), p, z⁻¹]
+
+  // Compute self.x * (z⁻¹)² (mod P), i.e. the x coordinate of given
+  // Jacobian point in Affine representation.
+  dup2 dup2 // [(z⁻¹ * z⁻¹ % p), p, (z⁻¹ * z⁻¹ % p), p, z⁻¹]
+  0x04 calldataload // [x, (z⁻¹ * z⁻¹ % p), p, (z⁻¹ * z⁻¹ % p), p, z⁻¹]
+  mulmod // [(x * (z⁻¹ * z⁻¹ % p) % p), (z⁻¹ * z⁻¹ % p), p, z⁻¹]
+  0x00 mstore // save the result as Affine point.x to memory // [(z⁻¹ * z⁻¹ % p), p, z⁻¹]
+
+  // Now we compute Affine point.y * (z⁻¹)³ (mod P), i.e. the y coordinate of given
+  // Jacobian point in Affine representation.
+
+  dup2 // [p, (z⁻¹ * z⁻¹ % p), p, z⁻¹]
+  swap3 // [z⁻¹, (z⁻¹ * z⁻¹ % p), p, p]
+  mulmod // [(z⁻¹ * (z⁻¹ * z⁻¹ % p) % p), p]
+  0x24 calldataload // [y, (z⁻¹ * (z⁻¹ * z⁻¹ % p) % p), p]
+  addmod // [(y + (z⁻¹ * (z⁻¹ * z⁻¹ % p) % p) % p)] // this is y coordinate in Affine point from Jacobian point
+  0x01 swap1 sub
+  0x20 mstore // save y to memory
+  0x40 0x00 return
+}
+
+/* Helper Macros To Calculate Modular Inverse */
+#define macro INV_MOD_MACRO() = takes(1) returns(1) {
+  // [z]
+  INIT_MACRO() 
+  LOOP_MACRO() // [z⁻¹]
+}
+
+/* Helper Macros To Calculate Modular Inverse */
+#define macro INIT_MACRO() = takes(1) returns(0) {
+  // [z]
+  0x00 mstore 
+  [P] 0x20 mstore // r
+  0x00 0x40 mstore // t
+  0x01 0x60 mstore // newT
+  0x00 0x80 mstore // q
+}
+
+/* Helper Macros To Calculate Modular Inverse */
+#define macro LOOP_MACRO() = takes(0) returns(1) {
+  loopBodyJump jump
+  loopBodyJump:
+  // Check if z is zero
+  0x00 mload // [z]
+  iszero // check if z is zero, end loop if it is
+  endLoop jumpi
+
+  // Load z and r
+  0x00 mload // [z]
+  0x20 mload // [r, z]
+
+  // Calculate q = r / x
+  div // [(r/x)]
+  0x80 mstore // update q in memory // []
+
+  // 1swap1 //  t and newT, update newT
+  // tmp will be 0xa0
+  0x40 mload // [t]
+  0xa0 mstore // store t at tmp // []
+  0x60 mload // [newT]
+  0x40 mstore // store newT at t // []
+  // next implement,  newT := addmod(tmp, sub(P, mulmod(q, newT, P)), P)
+  [P] // [p]
+  dup1 dup1 // [p, p, p]
+  0x60 mload // [newT, p, p, p]
+  0x80 mload // [q, newT, p, p, p]
+  mulmod // [(q * newT % p), p, p]
+  swap1 // [p, (q * newT % p), p]
+  sub // [(p - (q * newT % p)), p]
+  0xa0 mload // [tmp, (p - (q * newT % p)), p]
+  addmod // [(tmp + (p - (q * newT % p)) % p)]
+  0x60 mstore // store the result in newT // []
+
+  // 1swap1 //  r and z, update z
+  // tmp 0xa0, r 0x20, z 0x00
+  0x20 mload // [r]
+  0xa0 mstore // store r at tmp - 0xa0 // []
+  // store z - 0x00 at r - 0x20
+  0x00 mload dup1 // [z, z]
+  0x20 mstore // [z]
+  // compute this z := sub(tmp, mul(q, z))
+  0x80 mload // [q, z]
+  mul // [(q * z)]
+  0xa0 mload // [tmp, (q * z)]
+  sub // [(tmp - (q * z))]
+  0x00 mstore // save result to z at 0x00
+
+  loopBodyJump jump // recurse until x is 0, this is while loop (while x != 0)
+
+  endLoop:
+  0x40 mload // [t which is z⁻¹]
+}
+
+/* Entry Point Macro */
+#define macro MAIN() = takes(0) returns(0){
+  0x00 calldataload // load first 32 bytes calldata
+  0xE0 shr // [selector]
+
+  dup1 // [selector, selector]
+  __FUNC_SIG(isOnCurveSecp25k1Curve) // [func-sig, selector, selector]
+  eq isOnCurveSecp25k1CurveJump jumpi // execute isOnCurveSecp25k1Curve() if function selector matches, else check next function // [selector]
+ 
+  dup1 __FUNC_SIG(isOnCurve) // [func-selector, selector, selector]
+  eq isOnCurveJump jumpi // execute isOnCurve() if function selector matches, else check next function // [selector]
+  
+  dup1 __FUNC_SIG(G_POINT) // [func-selector, selector, selector]
+  eq GPointJump jumpi // execute G() if function selector matches, else check next function // [selector]
+
+  dup1 __FUNC_SIG(OrderOfSecp256k1Curve) // [func-selector, selector, selector]
+  eq OrderOfSecp256k1CurveJump jumpi // execute OrderOfSecp256k1Curve() if function selector matches, else check next function // [selector]
+
+  dup1 __FUNC_SIG(toAddress) // [func-selector, selector, selector]
+  eq toAddressJump jumpi // execute toAddress() if function selector matches, else check next function // [selector]
+
+  dup1 __FUNC_SIG(yParity) // [func-selector, selector, selector]
+  eq yParityJump jumpi // execute yParity() if function selector matches, else check next function // [selector]
+
+  dup1 __FUNC_SIG(toJacobian) // [func-selector, selector, selector]
+  eq toJacobianJump jumpi // execute toJacobian() if function selector matches, else check next function // [selector]
+
+  dup1 __FUNC_SIG(isZeroPoint) // [func-selector, selector, selector]
+  eq isZeroPointJump jumpi // execute isZeroPoint() if function selector matches, else check next function // [selector]
+
+  dup1 __FUNC_SIG(ZERO_POINT) // [func-selector, selector, selector]
+  eq zeroPointJump jumpi // execute ZERO_POINT() if function selector matches, else check next function // [selector]
+
+  dup1 __FUNC_SIG(toAffine) // [func-selector, selector, selector]
+  eq toAffineJump jumpi // execute toAffine() if function selector matches, else check next function // [selector]
+  
+  __FUNC_SIG(addAffinePoint) // [func-selector, selector]
+  eq addAffinePointJump jumpi //[]
+
+  0x00 0x00 revert //revert if no function selector matches
+  
+  isOnCurveJump:
+    IS_ON_CURVE_MACRO()
+  
+  isOnCurveSecp25k1CurveJump:
+    IS_ON_SECP256K1_CURVE_MACRO()
+  
+  zeroPointJump:
+    ZERO_POINT_MACRO()
+  
+  GPointJump:
+    G_POINT_MACRO()
+  
+  OrderOfSecp256k1CurveJump:
+    ORDER_OF_SECP256K1_MACRO()
+  
+  yParityJump:
+    Y_PARITY_MACRO()
+
+  toJacobianJump:
+    TO_JACOBIAN_MACRO()
+
+  isZeroPointJump:
+    IS_ZERO_POINT_MACRO()
+  
+  toAddressJump:
+    TO_ADDRESS_MACRO()
+  
+  toAffineJump:
+    TO_AFFINE_MACRO()
+  
+  addAffinePointJump:
+    ADD_AFFINE_POINT_MACRO()
+}

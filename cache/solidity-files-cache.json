@@ -1,0 +1,1233 @@
+{
+  "_format": "ethers-rs-sol-cache-3",
+  "paths": {
+    "artifacts": "out",
+    "build_infos": "out/build-info",
+    "sources": "src",
+    "tests": "test",
+    "scripts": "script",
+    "libraries": [
+      "lib"
+    ]
+  },
+  "files": {
+    "lib/foundry-huff/lib/forge-std/lib/ds-test/src/test.sol": {
+      "lastModificationDate": 1692708415512,
+      "contentHash": "9febff9d09f18af5306669dc276c4c43",
+      "sourceName": "lib/foundry-huff/lib/forge-std/lib/ds-test/src/test.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": ">=0.5.0",
+      "artifacts": {
+        "DSTest": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "test.sol/DSTest.json"
+        }
+      }
+    },
+    "lib/foundry-huff/lib/forge-std/src/Base.sol": {
+      "lastModificationDate": 1692708413294,
+      "contentHash": "ee13c050b1914464f1d3f90cde90204b",
+      "sourceName": "lib/foundry-huff/lib/forge-std/src/Base.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/foundry-huff/lib/forge-std/src/StdStorage.sol",
+        "lib/foundry-huff/lib/forge-std/src/Vm.sol"
+      ],
+      "versionRequirement": ">=0.6.2, <0.9.0",
+      "artifacts": {
+        "CommonBase": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "Base.sol/CommonBase.json"
+        },
+        "ScriptBase": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "Base.sol/ScriptBase.json"
+        },
+        "TestBase": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "Base.sol/TestBase.json"
+        }
+      }
+    },
+    "lib/foundry-huff/lib/forge-std/src/StdAssertions.sol": {
+      "lastModificationDate": 1692708413294,
+      "contentHash": "6cc2858240bcd443debbbf075490e325",
+      "sourceName": "lib/foundry-huff/lib/forge-std/src/StdAssertions.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/foundry-huff/lib/forge-std/lib/ds-test/src/test.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdMath.sol"
+      ],
+      "versionRequirement": ">=0.6.2, <0.9.0",
+      "artifacts": {
+        "StdAssertions": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "StdAssertions.sol/StdAssertions.json"
+        }
+      }
+    },
+    "lib/foundry-huff/lib/forge-std/src/StdChains.sol": {
+      "lastModificationDate": 1692708413294,
+      "contentHash": "1e71cb7dba32ac3c1becf2f32e859221",
+      "sourceName": "lib/foundry-huff/lib/forge-std/src/StdChains.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/foundry-huff/lib/forge-std/src/Vm.sol"
+      ],
+      "versionRequirement": ">=0.6.2, <0.9.0",
+      "artifacts": {
+        "StdChains": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "StdChains.sol/StdChains.json"
+        }
+      }
+    },
+    "lib/foundry-huff/lib/forge-std/src/StdCheats.sol": {
+      "lastModificationDate": 1692708413295,
+      "contentHash": "d984e2c76dae07bac1e292af2a5d4fd1",
+      "sourceName": "lib/foundry-huff/lib/forge-std/src/StdCheats.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/foundry-huff/lib/forge-std/src/StdStorage.sol",
+        "lib/foundry-huff/lib/forge-std/src/Vm.sol",
+        "lib/foundry-huff/lib/forge-std/src/console2.sol"
+      ],
+      "versionRequirement": ">=0.6.2, <0.9.0",
+      "artifacts": {
+        "StdCheats": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "StdCheats.sol/StdCheats.json"
+        },
+        "StdCheatsSafe": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "StdCheats.sol/StdCheatsSafe.json"
+        }
+      }
+    },
+    "lib/foundry-huff/lib/forge-std/src/StdError.sol": {
+      "lastModificationDate": 1692708413295,
+      "contentHash": "64c896e1276a291776e5ea5aecb3870a",
+      "sourceName": "lib/foundry-huff/lib/forge-std/src/StdError.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": ">=0.6.2, <0.9.0",
+      "artifacts": {
+        "stdError": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "StdError.sol/stdError.json"
+        }
+      }
+    },
+    "lib/foundry-huff/lib/forge-std/src/StdInvariant.sol": {
+      "lastModificationDate": 1692708413296,
+      "contentHash": "6d12d54c05754ad4e03066726dca3a84",
+      "sourceName": "lib/foundry-huff/lib/forge-std/src/StdInvariant.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": ">=0.6.2, <0.9.0",
+      "artifacts": {
+        "StdInvariant": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "StdInvariant.sol/StdInvariant.json"
+        }
+      }
+    },
+    "lib/foundry-huff/lib/forge-std/src/StdJson.sol": {
+      "lastModificationDate": 1692708413296,
+      "contentHash": "2e1d13674e152408867795362d833c24",
+      "sourceName": "lib/foundry-huff/lib/forge-std/src/StdJson.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/foundry-huff/lib/forge-std/src/Vm.sol"
+      ],
+      "versionRequirement": ">=0.6.0, <0.9.0",
+      "artifacts": {
+        "stdJson": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "StdJson.sol/stdJson.json"
+        }
+      }
+    },
+    "lib/foundry-huff/lib/forge-std/src/StdMath.sol": {
+      "lastModificationDate": 1692708413296,
+      "contentHash": "9da8f453eba6bb98f3d75bc6822bfb29",
+      "sourceName": "lib/foundry-huff/lib/forge-std/src/StdMath.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": ">=0.6.2, <0.9.0",
+      "artifacts": {
+        "stdMath": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "StdMath.sol/stdMath.json"
+        }
+      }
+    },
+    "lib/foundry-huff/lib/forge-std/src/StdStorage.sol": {
+      "lastModificationDate": 1692708413297,
+      "contentHash": "4fc0ff0cb196a405e5a4c9fa1c6acccb",
+      "sourceName": "lib/foundry-huff/lib/forge-std/src/StdStorage.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/foundry-huff/lib/forge-std/src/Vm.sol"
+      ],
+      "versionRequirement": ">=0.6.2, <0.9.0",
+      "artifacts": {
+        "stdStorage": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "StdStorage.sol/stdStorage.json"
+        },
+        "stdStorageSafe": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "StdStorage.sol/stdStorageSafe.json"
+        }
+      }
+    },
+    "lib/foundry-huff/lib/forge-std/src/StdStyle.sol": {
+      "lastModificationDate": 1692708413297,
+      "contentHash": "6281165a12aa639705c691fccefd855e",
+      "sourceName": "lib/foundry-huff/lib/forge-std/src/StdStyle.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/foundry-huff/lib/forge-std/src/Vm.sol"
+      ],
+      "versionRequirement": ">=0.4.22, <0.9.0",
+      "artifacts": {
+        "StdStyle": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "StdStyle.sol/StdStyle.json"
+        }
+      }
+    },
+    "lib/foundry-huff/lib/forge-std/src/StdUtils.sol": {
+      "lastModificationDate": 1692708413297,
+      "contentHash": "3ce83748fd76644688f916c9cced545b",
+      "sourceName": "lib/foundry-huff/lib/forge-std/src/StdUtils.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/foundry-huff/lib/forge-std/src/Vm.sol",
+        "lib/foundry-huff/lib/forge-std/src/interfaces/IMulticall3.sol"
+      ],
+      "versionRequirement": ">=0.6.2, <0.9.0",
+      "artifacts": {
+        "StdUtils": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "StdUtils.sol/StdUtils.json"
+        }
+      }
+    },
+    "lib/foundry-huff/lib/forge-std/src/Test.sol": {
+      "lastModificationDate": 1692708413297,
+      "contentHash": "15866901137b5670eabf31362523bd28",
+      "sourceName": "lib/foundry-huff/lib/forge-std/src/Test.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/foundry-huff/lib/forge-std/lib/ds-test/src/test.sol",
+        "lib/foundry-huff/lib/forge-std/src/Base.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdAssertions.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdChains.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdCheats.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdError.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdInvariant.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdJson.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdMath.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdStorage.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdStyle.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdUtils.sol",
+        "lib/foundry-huff/lib/forge-std/src/Vm.sol",
+        "lib/foundry-huff/lib/forge-std/src/console.sol",
+        "lib/foundry-huff/lib/forge-std/src/console2.sol",
+        "lib/foundry-huff/lib/forge-std/src/interfaces/IMulticall3.sol",
+        "lib/foundry-huff/lib/forge-std/src/safeconsole.sol"
+      ],
+      "versionRequirement": ">=0.6.2, <0.9.0",
+      "artifacts": {
+        "Test": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "Test.sol/Test.json"
+        }
+      }
+    },
+    "lib/foundry-huff/lib/forge-std/src/Vm.sol": {
+      "lastModificationDate": 1692708413299,
+      "contentHash": "4242e1fd567cc2f47c0990f7a0f1c48f",
+      "sourceName": "lib/foundry-huff/lib/forge-std/src/Vm.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": ">=0.6.2, <0.9.0",
+      "artifacts": {
+        "Vm": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "Vm.sol/Vm.json"
+        },
+        "VmSafe": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "Vm.sol/VmSafe.json"
+        }
+      }
+    },
+    "lib/foundry-huff/lib/forge-std/src/console.sol": {
+      "lastModificationDate": 1692708413300,
+      "contentHash": "100b8a33b917da1147740d7ab8b0ded3",
+      "sourceName": "lib/foundry-huff/lib/forge-std/src/console.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": ">=0.4.22, <0.9.0",
+      "artifacts": {
+        "console": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "console.sol/console.json"
+        }
+      }
+    },
+    "lib/foundry-huff/lib/forge-std/src/console2.sol": {
+      "lastModificationDate": 1692708413301,
+      "contentHash": "491ca717c1915995e78cc361485a3067",
+      "sourceName": "lib/foundry-huff/lib/forge-std/src/console2.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": ">=0.4.22, <0.9.0",
+      "artifacts": {
+        "console2": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "console2.sol/console2.json"
+        }
+      }
+    },
+    "lib/foundry-huff/lib/forge-std/src/interfaces/IMulticall3.sol": {
+      "lastModificationDate": 1692708413303,
+      "contentHash": "7b131ca1ca32ef6378b7b9ad5488b901",
+      "sourceName": "lib/foundry-huff/lib/forge-std/src/interfaces/IMulticall3.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": ">=0.6.2, <0.9.0",
+      "artifacts": {
+        "IMulticall3": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "IMulticall3.sol/IMulticall3.json"
+        }
+      }
+    },
+    "lib/foundry-huff/lib/forge-std/src/safeconsole.sol": {
+      "lastModificationDate": 1692708413305,
+      "contentHash": "ac3b1bf5a444db5db3656021830258a8",
+      "sourceName": "lib/foundry-huff/lib/forge-std/src/safeconsole.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": ">=0.6.2, <0.9.0",
+      "artifacts": {
+        "safeconsole": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "safeconsole.sol/safeconsole.json"
+        }
+      }
+    },
+    "lib/foundry-huff/lib/solidity-stringutils/strings.sol": {
+      "lastModificationDate": 1692708415732,
+      "contentHash": "2b4e9d2225a4542b48016c76b16268a2",
+      "sourceName": "lib/foundry-huff/lib/solidity-stringutils/strings.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": "^0.8.0",
+      "artifacts": {
+        "strings": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "strings.sol/strings.json"
+        }
+      }
+    },
+    "lib/foundry-huff/src/HuffConfig.sol": {
+      "lastModificationDate": 1692708407530,
+      "contentHash": "90eb000a017baa2544e6984375b80b0f",
+      "sourceName": "lib/foundry-huff/src/HuffConfig.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/foundry-huff/lib/forge-std/src/Vm.sol",
+        "lib/foundry-huff/lib/solidity-stringutils/strings.sol"
+      ],
+      "versionRequirement": ">=0.8.13, <0.9.0",
+      "artifacts": {
+        "HuffConfig": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "HuffConfig.sol/HuffConfig.json"
+        }
+      }
+    },
+    "lib/foundry-huff/src/HuffDeployer.sol": {
+      "lastModificationDate": 1692708407531,
+      "contentHash": "9d94a12fe68a13814ced41ddbdad1eb4",
+      "sourceName": "lib/foundry-huff/src/HuffDeployer.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/foundry-huff/lib/forge-std/src/Vm.sol",
+        "lib/foundry-huff/lib/solidity-stringutils/strings.sol",
+        "lib/foundry-huff/src/HuffConfig.sol"
+      ],
+      "versionRequirement": ">=0.8.13, <0.9.0",
+      "artifacts": {
+        "HuffDeployer": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "HuffDeployer.sol/HuffDeployer.json"
+        }
+      }
+    },
+    "src/ECPointVerifier2.sol": {
+      "lastModificationDate": 1692708492827,
+      "contentHash": "16148694a28fdf55bcdbb4403bdb2309",
+      "sourceName": "src/ECPointVerifier2.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": "=0.8.19",
+      "artifacts": {
+        "ECPointVerifier": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "ECPointVerifier2.sol/ECPointVerifier.json"
+        }
+      }
+    },
+    "src/Interface/ISecp256k1.sol": {
+      "lastModificationDate": 1693160984242,
+      "contentHash": "cbea7ee16630e971b82acade4dd46637",
+      "sourceName": "src/Interface/ISecp256k1.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": "=0.8.19",
+      "artifacts": {
+        "ISecp256k1": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "ISecp256k1.sol/ISecp256k1.json"
+        }
+      }
+    },
+    "src/LibSecp256k1.sol": {
+      "lastModificationDate": 1693182158506,
+      "contentHash": "6f032fc35e6156b9f64042d48e2d5c27",
+      "sourceName": "src/LibSecp256k1.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": "^0.8.16",
+      "artifacts": {
+        "LibSecp256k1": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "LibSecp256k1.sol/LibSecp256k1.json"
+        }
+      }
+    },
+    "test/Secp256k1.t.sol": {
+      "lastModificationDate": 1693183675691,
+      "contentHash": "f5e5b5190fdc905241585bba028f0e12",
+      "sourceName": "test/Secp256k1.t.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/foundry-huff/lib/forge-std/lib/ds-test/src/test.sol",
+        "lib/foundry-huff/lib/forge-std/src/Base.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdAssertions.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdChains.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdCheats.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdError.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdInvariant.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdJson.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdMath.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdStorage.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdStyle.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdUtils.sol",
+        "lib/foundry-huff/lib/forge-std/src/Test.sol",
+        "lib/foundry-huff/lib/forge-std/src/Vm.sol",
+        "lib/foundry-huff/lib/forge-std/src/console.sol",
+        "lib/foundry-huff/lib/forge-std/src/console2.sol",
+        "lib/foundry-huff/lib/forge-std/src/interfaces/IMulticall3.sol",
+        "lib/foundry-huff/lib/forge-std/src/safeconsole.sol",
+        "lib/foundry-huff/lib/solidity-stringutils/strings.sol",
+        "lib/foundry-huff/src/HuffConfig.sol",
+        "lib/foundry-huff/src/HuffDeployer.sol",
+        "src/Interface/ISecp256k1.sol",
+        "test/utils/NonMatchingSelectorHelper.sol"
+      ],
+      "versionRequirement": "=0.8.19",
+      "artifacts": {
+        "Secp256k1Test": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "Secp256k1.t.sol/Secp256k1Test.json"
+        }
+      }
+    },
+    "test/String.t.sol": {
+      "lastModificationDate": 1692733745241,
+      "contentHash": "feb3ad02dacdc2474cddc155d0cc4d99",
+      "sourceName": "test/String.t.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/foundry-huff/lib/forge-std/lib/ds-test/src/test.sol",
+        "lib/foundry-huff/lib/forge-std/src/Base.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdAssertions.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdChains.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdCheats.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdError.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdInvariant.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdJson.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdMath.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdStorage.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdStyle.sol",
+        "lib/foundry-huff/lib/forge-std/src/StdUtils.sol",
+        "lib/foundry-huff/lib/forge-std/src/Test.sol",
+        "lib/foundry-huff/lib/forge-std/src/Vm.sol",
+        "lib/foundry-huff/lib/forge-std/src/console.sol",
+        "lib/foundry-huff/lib/forge-std/src/console2.sol",
+        "lib/foundry-huff/lib/forge-std/src/interfaces/IMulticall3.sol",
+        "lib/foundry-huff/lib/forge-std/src/safeconsole.sol",
+        "lib/foundry-huff/lib/solidity-stringutils/strings.sol",
+        "lib/foundry-huff/src/HuffConfig.sol",
+        "lib/foundry-huff/src/HuffDeployer.sol",
+        "test/utils/NonMatchingSelectorHelper.sol"
+      ],
+      "versionRequirement": "^0.8.19",
+      "artifacts": {
+        "String": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "String.t.sol/String.json"
+        },
+        "StringTest": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "String.t.sol/StringTest.json"
+        }
+      }
+    },
+    "test/utils/NonMatchingSelectorHelper.sol": {
+      "lastModificationDate": 1692708719372,
+      "contentHash": "3e0b383bbbe6ab073cc324c985f64a6b",
+      "sourceName": "test/utils/NonMatchingSelectorHelper.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "useLiteralContent": false,
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "shanghai",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": "^0.8.15",
+      "artifacts": {
+        "NonMatchingSelectorHelper": {
+          "0.8.19+commit.7dd6d404.Darwin.appleclang": "NonMatchingSelectorHelper.sol/NonMatchingSelectorHelper.json"
+        }
+      }
+    }
+  }
+}
