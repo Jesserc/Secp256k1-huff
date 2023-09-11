@@ -12,6 +12,7 @@ contract Secp256k1Test is Test, NonMatchingSelectorHelper {
 
     function setUp() public {
         secp256k1 = ISecp256k1(HuffDeployer.config().deploy("Secp256k1"));
+        vm.label(address(secp256k1), "Secp256k1-Huff");
     }
 
     function testIsOnCurve() public {
